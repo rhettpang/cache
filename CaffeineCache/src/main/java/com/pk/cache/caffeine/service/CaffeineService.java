@@ -1,5 +1,7 @@
 package com.pk.cache.caffeine.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -8,12 +10,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CaffeineService {
+    private static final Logger logger = LoggerFactory.getLogger(CaffeineService.class);
 
-
-    @Cacheable(cacheNames = "outLimit",key = "#name",sync = true)
+    @Cacheable(cacheNames = "outLimit",key = "#name")
     public String caffeineServiceTest(String name){
         String value = name + " nihao";
-        System.out.println("value = "+value);
+        logger.info("CaffeineService value = {}",value);
         return value;
     }
 
