@@ -5,6 +5,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -42,10 +44,22 @@ public class CaffeineConfig {
                     return key + "ni hao";
             }
 
+            /**
+             *
+             * */
             @Override
             public Object reload(Object key, Object oldValue) throws Exception {
                 System.out.println(System.currentTimeMillis()+" oldValue = " + oldValue);
-                return this.load(key);
+                CompletableFuture future = asyncLoad(key, asyncTaskExecutor());
+                Object newValue = "";
+                while (true){
+                    if (future.isDone()){
+                        newValue = future.get();
+                        break;
+                    }
+                }
+                System.out.println("newValue = "+newValue);
+                return newValue;
 //                return oldValue+" a";
             }
 
@@ -67,4 +81,13 @@ public class CaffeineConfig {
         };
         return cacheLoader;
     }
+
+
+    @Bean
+    public AsyncTaskExecutor asyncTaskExecutor(){
+        AsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
+//        asyncTaskExecutor.
+        return asyncTaskExecutor;
+    }
+
 }

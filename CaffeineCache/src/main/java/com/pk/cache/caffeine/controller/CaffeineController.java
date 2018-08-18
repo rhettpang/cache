@@ -17,7 +17,7 @@ public class CaffeineController {
 
     @GetMapping("/caffeine")
     public String CaffeineSaveTest(@RequestParam String name){
-        System.out.println(System.currentTimeMillis()+" name = " + name);
+        System.out.println(System.currentTimeMillis()+" CaffeineController name = " + name);
         return caffeineService.caffeineServiceTest(name);
     }
 
