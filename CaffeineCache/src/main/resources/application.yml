@@ -2,9 +2,12 @@
 
 #debug: true
 
- spring:
+spring:
   cache:
     cache-names: outLimit
-    caffeine:
-      spec: initialCapacity=50,maximumSize=500,expireAfterWrite=10s,refreshAfterWrite=5s
+#    caffeine:
+#      spec: initialCapacity=50,maximumSize=500,expireAfterWrite=50s,refreshAfterWrite=5s
     type: caffeine
+
+caffeine:
+  spec: initialCapacity=50,maximumSize=500,expireAfterWrite=50s
