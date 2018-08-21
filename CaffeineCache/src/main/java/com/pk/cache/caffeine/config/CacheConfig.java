@@ -2,6 +2,8 @@ package com.pk.cache.caffeine.config;
 
 import com.github.benmanes.caffeine.cache.*;
 import com.pk.cache.caffeine.service.CaffeineService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class CacheConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(CacheConfig.class);
 
     @Autowired
     private CacheLoader cacheLoader;
@@ -98,6 +102,27 @@ public class CacheConfig {
         return Caffeine.newBuilder()
                 .recordStats()
                 .refreshAfterWrite(10,TimeUnit.SECONDS)
+                .build(key -> caffeineService.getCacheService(String.valueOf(key)));
+    }
+
+    @Bean("writer")
+    public Cache writerCache(){
+        return Caffeine.newBuilder()
+                .recordStats()
+                .expireAfterWrite(5,TimeUnit.SECONDS)
+                .writer(new CacheWriter<Object, Object>() {
+                    @Override
+                    public void write(Object key, Object value){
+                        logger.info("This is writerCache's write");
+                        //如果有缓存新增，这里的方法将被执行
+                        //写操作是阻塞的，写的时候读数据会返回原有值
+                    }
+                    @Override
+                    public void delete(Object key, Object value, RemovalCause cause){
+                        logger.info("This is writerCache's delete");
+                        //如果有缓存删除（到期等），这里的方法将被执行
+                    }
+                })
                 .build(key -> caffeineService.getCacheService(String.valueOf(key)));
     }
 

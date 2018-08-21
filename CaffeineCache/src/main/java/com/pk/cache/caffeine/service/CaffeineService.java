@@ -29,7 +29,7 @@ public class CaffeineService {
     @Autowired
     private CacheManager cacheManager;
 
-    @Resource(name = "refreshAfterWrite")
+    @Resource(name = "writer")
     private com.github.benmanes.caffeine.cache.Cache cache;
 
     public CacheStats stats(){
@@ -45,10 +45,10 @@ public class CaffeineService {
 
     public Object getCache(String key){
         logger.info("size = {}",cache.estimatedSize());
+        LoadingCache loadingCache =  (LoadingCache) cache;
+        CacheStats stats = loadingCache.stats();
+        loadingCache.refresh(key);
         Object value = cache.getIfPresent(key);
-//        LoadingCache loadingCache =  (LoadingCache) cache;
-//        CacheStats stats = loadingCache.stats();
-//        loadingCache.refresh(key);
         logger.info("value = {}",value);
         return value;
     }
