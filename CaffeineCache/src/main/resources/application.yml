@@ -6,8 +6,8 @@ spring:
   cache:
     cache-names: outLimit
 #    caffeine:
-#      spec: initialCapacity=50,maximumSize=500,expireAfterWrite=50s,refreshAfterWrite=5s
+#      spec: initialCapacity=50,maximumSize=500,expireAfterWrite=5s,refreshAfterWrite=7s
     type: caffeine
 
 caffeine:
-  spec: initialCapacity=50,maximumSize=500,expireAfterWrite=50s
+  spec: initialCapacity=50,maximumSize=500,expireAfterWrite=5s
