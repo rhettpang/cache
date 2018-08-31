@@ -3,6 +3,7 @@ package com.pk.cache.caffeine.service;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Policy;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Map;
+import java.util.OptionalLong;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by pangkunkun on 2018/8/17.
@@ -29,7 +33,7 @@ public class CaffeineService {
     @Autowired
     private CacheManager cacheManager;
 
-    @Resource(name = "writer")
+    @Resource(name = "RemovalListener")
     private com.github.benmanes.caffeine.cache.Cache cache;
 
     public CacheStats stats(){
@@ -45,15 +49,49 @@ public class CaffeineService {
 
     public Object getCache(String key){
         logger.info("size = {}",cache.estimatedSize());
+//        Policy.Expiration expiration = new Policy.Expiration() {
+//            @Override
+//            public OptionalLong ageOf(Object key, TimeUnit unit) {
+//                return null;
+//            }
+//
+//            @Override
+//            public long getExpiresAfter(TimeUnit unit) {
+//                return 0;
+//            }
+//
+//            @Override
+//            public void setExpiresAfter(long duration, TimeUnit unit) {
+//
+//            }
+//
+//            @Override
+//            public Map oldest(int limit) {
+//                return null;
+//            }
+//
+//            @Override
+//            public Map youngest(int limit) {
+//                return null;
+//            }
+//        };
+//
+//        cache.policy().eviction().ifPresent(eviction -> {
+//            expiration.setExpiresAfter(20,TimeUnit.SECONDS);
+//        });
+
+//        cache.put("key1","value1");
         LoadingCache loadingCache =  (LoadingCache) cache;
         CacheStats stats = loadingCache.stats();
-        loadingCache.refresh(key);
-        Object value = cache.getIfPresent(key);
+//        loadingCache.refresh(key);
+//        Object value = cache.getIfPresent(key);
+        Object value = cache.get(key,k->getCacheService(key));
         logger.info("value = {}",value);
         return value;
     }
 
     public Object getCacheService(String key){
+        logger.info("This is getCacheService");
         return key + " nihao ";
     }
 

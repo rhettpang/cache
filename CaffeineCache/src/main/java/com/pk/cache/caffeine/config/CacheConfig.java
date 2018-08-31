@@ -105,6 +105,9 @@ public class CacheConfig {
                 .build(key -> caffeineService.getCacheService(String.valueOf(key)));
     }
 
+    /**
+     * writer的监控是同步执行的
+     * */
     @Bean("writer")
     public Cache writerCache(){
         return Caffeine.newBuilder()
@@ -124,6 +127,26 @@ public class CacheConfig {
                     }
                 })
                 .build(key -> caffeineService.getCacheService(String.valueOf(key)));
+    }
+
+
+    /**
+     * RemovalListener的方法是异步执行的
+     * */
+    @Bean("RemovalListener")
+    public Cache removalListenerCache(){
+        return Caffeine.newBuilder()
+                .recordStats()
+                .expireAfterWrite(5,TimeUnit.SECONDS)
+                .removalListener((key, value, cause) ->  myRemovalListener(key, value, cause))
+                .build(key -> caffeineService.getCacheService(String.valueOf(key)));
+    }
+
+    private void myRemovalListener(Object key, Object value, RemovalCause cause){
+        logger.info("key = {}",key);
+        logger.info("value = {}",value);
+        int i = 10/0;
+        logger.info("This is myRemovalListener, removal key = {}, value = {}, cause = {}",key,value,cause);
     }
 
 }
