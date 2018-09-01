@@ -82,10 +82,11 @@ public class CaffeineService {
 
 //        cache.put("key1","value1");
         LoadingCache loadingCache =  (LoadingCache) cache;
-        CacheStats stats = loadingCache.stats();
-//        loadingCache.refresh(key);
-//        Object value = cache.getIfPresent(key);
-        Object value = cache.get(key,k->getCacheService(key));
+//        CacheStats stats = loadingCache.stats();
+////        loadingCache.refresh(key);
+////        Object value = cache.getIfPresent(key);
+//        Object value = cache.get(key,k->getCacheService(key));
+        Object value = loadingCache.get(key);
         logger.info("value = {}",value);
         return value;
     }
@@ -93,6 +94,11 @@ public class CaffeineService {
     public Object getCacheService(String key){
         logger.info("This is getCacheService");
         return key + " nihao ";
+    }
+
+    public Object getCacheService2(String key){
+        logger.info("This is getCacheService2");
+        return null;
     }
 
     /**

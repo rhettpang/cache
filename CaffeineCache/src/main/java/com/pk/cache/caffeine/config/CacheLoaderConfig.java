@@ -31,10 +31,11 @@ public class CacheLoaderConfig {
             @Override
             public Object load( Object key) throws Exception{
                 System.out.println(System.currentTimeMillis()+" This is load key = " + key);
-                if (String.valueOf(key).equals("kun")){
-                    return "kun kun ni hao";
-                }
-                return key + "ni hao";
+                throw new Exception();
+//                if (String.valueOf(key).equals("kun")){
+//                    return "kun kun ni hao";
+//                }
+//                return key + "ni hao";
             }
 
             @Override
